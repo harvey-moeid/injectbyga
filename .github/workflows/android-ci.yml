@@ -31,7 +31,13 @@ jobs:
       - name: Validate Gradle configuration
         run: ./gradlew --no-daemon --stacktrace help
       - name: Android lint
-        run: ./gradlew --no-daemon --stacktrace lintDebug
+        run: |
+          lint_status=0
+          ./gradlew --no-daemon --stacktrace lintDebug || lint_status=$?
+          if [ -f app/build/reports/lint-results-debug.txt ]; then
+            cat app/build/reports/lint-results-debug.txt
+          fi
+          exit "$lint_status"
       - name: Unit tests
         run: ./gradlew --no-daemon --stacktrace testDebugUnitTest
       - name: Build experimental APK and device test APK

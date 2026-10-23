@@ -46,3 +46,5 @@ Kegagalan storage, crypto, provider, dan ekspor dilaporkan dengan pesan aman tan
 ## Toolchain terkunci
 
 Gradle 8.11.1 (wrapper SHA-256), AGP 8.9.2, Kotlin 2.1.20, KSP 2.1.20-1.0.32, Compose BOM 2025.04.01, Room 2.7.1, DataStore 1.1.4, Browser 1.8.0. Versi stabil dipin; bukan klaim bahwa versi tersebut paling baru. compile/target SDK 35, source/target JVM 17; CI JDK 17.
+
+Lint memakai `abortOnError = true`; rekomendasi versi/target tetap warning yang terlihat, tidak dijadikan error atau disembunyikan. Review pembaruan toolchain/target/dependensi dan regresi Android terbaru sebelum produksi setelah GO.

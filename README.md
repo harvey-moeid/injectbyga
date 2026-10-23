@@ -75,6 +75,7 @@ Dokumen utama:
 - [Hasil PoC dan feasibility gate](docs/poc-results.md)
 - [Keamanan](docs/security.md)
 - [Hasil engineering dan petunjuk tes](docs/testing.md)
+- [Laporan implementasi dan inventori file](docs/delivery-report.md)
 - [Checklist acceptance](docs/acceptance-checklist.md)
 
 Dashboard lengkap, account picker, impor CSV/TXT, grup, favorit, pencarian dan workspace menunggu **GO berbukti**. Kartu A/B/C pada PoC tidak menggantikan kebutuhan isolasi sesi produk penuh.
