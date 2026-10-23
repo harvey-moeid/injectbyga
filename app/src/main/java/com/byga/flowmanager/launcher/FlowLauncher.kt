@@ -5,9 +5,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.UserManager
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
 import com.byga.flowmanager.domain.LaunchMethod
 import com.byga.flowmanager.domain.Outcome
 
@@ -24,7 +24,7 @@ class FlowLauncher(private val context: Context) {
     @Suppress("DEPRECATION")
     fun browsers(): List<Provider> {
         // Query a neutral HTTPS URL, so domain-specific Flow handlers are not treated as browsers.
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://example.org/")).addCategory(Intent.CATEGORY_BROWSABLE)
+        val intent = Intent(Intent.ACTION_VIEW, "https://example.org/".toUri()).addCategory(Intent.CATEGORY_BROWSABLE)
         val tabs = pm.queryIntentServices(Intent("android.support.customtabs.action.CustomTabsService"), 0)
             .map { it.serviceInfo.packageName }.toSet()
         return pm.queryIntentActivities(intent, PackageManager.MATCH_ALL)
@@ -63,10 +63,10 @@ class FlowLauncher(private val context: Context) {
                     val tab = CustomTabsIntent.Builder().setShowTitle(true)
                         .setShareState(CustomTabsIntent.SHARE_STATE_OFF).build()
                     tab.intent.setPackage(provider)
-                    tab.launchUrl(activity, Uri.parse(FLOW_URL))
+                    tab.launchUrl(activity, FLOW_URL.toUri())
                 }
                 LaunchMethod.BROWSER, LaunchMethod.WORK_PROFILE -> activity.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse(FLOW_URL))
+                    Intent(Intent.ACTION_VIEW, FLOW_URL.toUri())
                         .addCategory(Intent.CATEGORY_BROWSABLE).setPackage(provider))
             }
             // startActivity success proves dispatch only. No automatic authentication inference.
