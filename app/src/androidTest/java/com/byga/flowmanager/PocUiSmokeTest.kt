@@ -23,7 +23,8 @@ class PocUiSmokeTest {
         compose.onNodeWithText("Email yang diharapkan").performTextInput("synthetic-a@example.com")
         compose.onNodeWithText("Simpan konfigurasi").performClick()
         compose.waitUntil(10_000) {
-            compose.onAllNodesWithText("synthetic-a@example.com").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText("Atur Account A").fetchSemanticsNodes().isEmpty() &&
+                compose.onAllNodesWithText("synthetic-a@example.com").fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNodeWithText("Buka Flow · Account A").performScrollTo().performClick()
         compose.onNodeWithText("Buka eksperimen Account A?").assertIsDisplayed()
