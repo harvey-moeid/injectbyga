@@ -19,6 +19,8 @@ Keputusan pengguna terbaru **“satu browser saja”** diterapkan sebagai organi
 
 Build lokal **berhasil**, lint **No issues found**, 22 unit tests **lulus** dengan0 failures/errors/skipped. APK debug dan instrumentation APK terbentuk; apksigner verify lulus. Bukti: [organizer-local-checks.txt](build-evidence/organizer-local-checks.txt). Hasil CI/emulator aktual dan lokasi unduhan dicatat pada [testing.md](testing.md) setelah tersedia.
 
+Hasil final [CI40047505432](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432): kedua job **success**, unit test/build lulus dan **11 tes emulator Android12/API31 benar-benar dijalankan serta lulus**. Lint CI0 error/14 warning versi/target yang tetap terlihat. [Unduh APK v0.2.0-manual](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542067641). Bukti: [organizer-ci-checks.txt](build-evidence/organizer-ci-checks.txt). Commit kode tervalidasi560fbaf; perubahan berikutnya hanya dokumentasi hasil.
+
 APK lokal: app/build/outputs/apk/debug/app-debug.apk. Nama artifact CI: BYGA-Flow-Manager-Debug-APK. Semua kode/dokumen relevan dikomit/push pada branch codex/byga-phase0-poc dan [PR #1](https://github.com/harvey-moeid/injectbyga/pull/1) diperbarui tanpa merge. Tidak menerbitkan APK produksi.
 
 ## Batas nyata
@@ -61,6 +63,7 @@ app/src/test/java/com/byga/flowmanager/organizer/AccountImportTest.kt
 app/src/test/java/com/byga/flowmanager/organizer/OrganizerRulesTest.kt
 docs/acceptance-checklist.md
 docs/architecture.md
+docs/build-evidence/organizer-ci-checks.txt
 docs/build-evidence/organizer-local-checks.txt
 docs/delivery-report.md
 docs/feasibility-gate.json

@@ -17,6 +17,8 @@ BYGA menyimpan metadata, bukan sesi Google. Memilih kartu tidak menjamin Flow su
 
 ## Pasang dan mulai
 
+[Unduh APK v0.2.0 satu browser/manual](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542067641) dari CI yang berhasil membangun debug APK. Unduhan berupa ZIP; ekstrak app-debug.apk sebelum dipasang. Hasil tes lengkap ada di [testing.md](docs/testing.md).
+
 Android minimum 12/API 31. Pasang browser kompatibel dari sumber resmi, lalu login ke akun Google/Flow melalui browser tersebut. BYGA tidak melakukan login Google.
 
 1. Unduh artifact **BYGA-Flow-Manager-Debug-APK** dari run **Android CI** yang berhasil pada [GitHub Actions](https://github.com/harvey-moeid/injectbyga/actions). Ekstrak ZIP dan pasang `app-debug.apk` melalui UI Android. Debug APK adalah build uji, bukan publikasi produksi.

@@ -7,11 +7,14 @@ com.byga.flowmanager.IdentityRulesTest: tests=7, failures=0, errors=0, skipped=0
 com.byga.flowmanager.MetadataCipherTest: tests=4, failures=0, errors=0, skipped=0
 com.byga.flowmanager.organizer.AccountImportTest: tests=8, failures=0, errors=0, skipped=0
 com.byga.flowmanager.organizer.OrganizerRulesTest: tests=3, failures=0, errors=0, skipped=0
-APK bytes: 63497315
-APK SHA256: b09e5504dbe470b86666ca88ccbbabf2d391f190a47157185690aeeb73c8af72
+APK bytes: 63497123
+APK SHA256: 47b937329f7a09246ee735d8de1a0f89317d3fc45c9e956d12e73a5da4d5293a
 APK: app/build/outputs/apk/debug/app-debug.apk
 aapt: com.byga.flowmanager, 0.2.0-manual, minSdk31, targetSdk35
 apksigner verify --verbose: exit0; signature v2 valid; one signer (debug).
 Instrumentation: 11 tests compiled; local connected tests not run because no device/KVM.
 Production guard --require-go: remains blocked by UNVERIFIED isolation gate.
 CI results recorded separately when available.
+Final source commit: 560fbafb75785c1d52ea6102d9327c48888b8e6e
+After compact-grid wording/test synchronization changes: lintDebug assembleDebug assembleDebugAndroidTest BUILD SUCCESSFUL in55s; 12 executed,65 up-to-date.
+Final local lint: No issues found. APK debug signature verified again (exit0).

@@ -44,3 +44,19 @@ Laporan lokal: app/build/reports/lint-results-debug.html, app/build/reports/test
 - SAF import/export ke provider file nyata; ekspor CSV plaintext hanya setelah konfirmasi, tanpa password/OTP/session data.
 
 Tidak ada klaim tested successfully untuk skenario-skenario tersebut. Persetujuan scope manual dipertahankan terpisah dari hasil isolasi UNVERIFIED.
+
+Pemeriksaan kode final `560fbaf`: `lintDebug assembleDebug assembleDebugAndroidTest` berhasil dalam55s (12 task dieksekusi,65 up-to-date). Lint lokal tetap No issues found dan signature APK valid. 22 hasil unit test sebelumnya tetap berlaku karena logika domain tidak berubah.
+
+## CI kode final dan unduhan
+
+Run [40047505432](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432), commit kode `560fbafb75785c1d52ea6102d9327c48888b8e6e`: job debug-apk **success**. SDK/Gradle/lint/unit/build debug dan test APK lulus. Lint runner memiliki informasi versi yang lebih baru dan melaporkan **0 errors,14 warnings** (1 OldTargetApi,13 GradleDependency), seluruhnya terlihat di log/report; error asli tetap fatal. Tidak memakai baseline/suppression atau continue-on-error untuk menyembunyikan error.
+
+**Run selesai: kedua job success. Sebanyak11 instrumentation tests benar-benar dijalankan dan lulus di emulator Android12/API31** (01:05 UTC,24 Oktober2026). Log mencatat Starting11 tests, Finished11 tests dan BUILD SUCCESSFUL dalam5m7s. Ini mencakup test database50 akun/bulk, duplicate recheck, cascade delete, snapshot/stale confirmation/mismatch, DataStore, Intent browser tanpa auth data, dashboard CRUD/search/grid/warning dan lab lama. Tidak ada akun Google sungguhan atau autentikasi Google yang diuji. Perubahan setelah commit kode CI hanya laporan dokumentasi.
+
+- [BYGA-Flow-Manager-Debug-APK](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542067641), ID12542067641, ZIP16.983.454 bytes. SHA256 arsip ZIP: `5299a69c25a22568f0a2d311cfa4ed4bc965c26857c19aa3a307a7662fd80301`. Ini hash ZIP artifact CI, berbeda dari raw APK lokal/signature debug cloud.
+- [Laporan lint/JUnit dan test APK](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542012916).
+- [Laporan11 tes emulator](https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542441141).
+
+Bukti ringkas final: [organizer-ci-checks.txt](build-evidence/organizer-ci-checks.txt). Pengujian HP yang masih diperlukan di atas tetap belum dinyatakan lulus oleh hasil emulator ini.
+
+Artifact run ini berlaku sampai22 Januari2027 dan dapat memerlukan login GitHub. Kode setelah commit CI tersebut hanya diperbarui bila ada error; pembaruan hasil akhir dokumentasi tidak mengubah aplikasi.

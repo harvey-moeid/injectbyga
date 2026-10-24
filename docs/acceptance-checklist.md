@@ -22,6 +22,10 @@ Keputusan produk aktif: scope-manual-switching.md dan addendum PRD. Checklist im
 
 Lihat testing.md untuk hasil build, 22 JVM unit tests dan instrumentation yang benar-benar dijalankan. Jumlah tes yang tersedia bukan klaim semua tes telah berjalan.
 
+- [x]22 unit tests lulus (0 failures/errors/skipped).
+- [x]11 instrumentation tests dijalankan dan lulus pada emulator API31, run40047505432.
+- [x]Debug APK berhasil diunggah sebagai BYGA-Flow-Manager-Debug-APK.
+
 ## Wajib pada HP sebelum menyebut versi manual siap produksi
 
 - [ ] Flow/browser aktual, pemilih akun perangkat dan pemilihan akun manual benar.
