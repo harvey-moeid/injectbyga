@@ -40,7 +40,7 @@ jobs:
           exit "$lint_status"
       - name: Unit tests
         run: ./gradlew --no-daemon --stacktrace testDebugUnitTest
-      - name: Build experimental APK and device test APK
+      - name: Build debug APK and device test APK
         run: ./gradlew --no-daemon --stacktrace assembleDebug assembleDebugAndroidTest
       - name: Upload experimental debug APK
         uses: actions/upload-artifact@v4
@@ -61,9 +61,9 @@ jobs:
       - name: Build summary
         if: always()
         run: |
-          echo '### BYGA Phase 0' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Debug APK is experimental. CI does not test Google identity or establish session isolation.' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Review failing step logs and the Test Reports artifact. See docs/poc-results.md for the feasibility gate.' >> "$GITHUB_STEP_SUMMARY"
+          echo '### BYGA — single browser / manual account switching' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Debug APK: organizer metadata only. Choose the active Google account manually in Flow.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'CI does not test Google login or establish session isolation. Review reports and docs/scope-manual-switching.md.' >> "$GITHUB_STEP_SUMMARY"
   android-persistence:
     runs-on: ubuntu-latest
     timeout-minutes: 35

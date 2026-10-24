@@ -1,6 +1,6 @@
 # Hasil PoC — BYGA Flow Manager
 
-**Feasibility gate: UNVERIFIED. Full application tidak dilanjutkan.**
+**Feasibility isolasi: UNVERIFIED. Organizer satu browser dengan pergantian manual kini disetujui pengguna melalui addendum PRD.** Pengembangan organizer tidak menyatakan kebutuhan isolasi terpenuhi.
 
 Tanggal investigasi: 23 Oktober 2026 UTC (24 Oktober 2026 WIB). PRD asli disalin utuh ke `PRD.md`. Lingkungan: Codex Cloud Linux, tanpa HP Android fisik, tanpa akun Google uji, tanpa profil kerja atau Flow terpasang. Tidak ada pengujian identitas nyata yang dijalankan. Tidak ada video/screenshot akun yang bisa dijadikan bukti isolasi. Status ini bukan NO-GO teknis: belum ada bukti cukup untuk keputusan tersebut.
 
@@ -38,6 +38,16 @@ Kolom hasil di bawah berlaku untuk setiap rute; belum ada satu pun rute yang diu
 Hasil build/check yang benar-benar dijalankan dicatat di `docs/testing.md`. Tidak satu pun hasil engineering menetapkan PASS untuk tabel identitas di atas. APK debug hanya alat eksperimen. Instrumentation persistence memakai data email sintetik, bukan login Google.
 
 ## Keputusan dan langkah lanjut
+
+### Pembaruan scope dan laporan pengguna
+
+Keputusan terbaru pengguna adalah **“satu browser saja”**, yang mengikuti penjelasan bahwa akun dipilih manual di Flow. Scope baru dicatat di `scope-manual-switching.md`; keputusan ini mengizinkan dashboard/metadata lengkap dan menggantikan rencana browser terpisah, tanpa mengubah gate isolasi menjadi GO.
+
+Pengguna juga mengirim screenshot riwayat BYGA pada perangkat nyata: browser `com.android.chrome` versi `155.0.8059.84`, profil PERSONAL, seri `b99b3a1c`. Pada 24 Oktober 2026 (jam perangkat; zona belum dilaporkan), pembukaan A pukul 07:09:41 dicatat tester melihat B (**FAIL — laporan manual pengguna**); pembukaan A pukul 07:10:40 tidak dikonfirmasi sebelum pembukaan berikutnya; pembukaan B pukul 07:11:37 dicatat cocok secara manual. Ini mendukung kegagalan pemilihan otomatis A pada konfigurasi Chrome tersebut. Screenshot berisi UI riwayat BYGA, bukan rekaman identitas langsung dari Flow; Codex tidak menyaksikan login/observasi aktual. Email dan screenshot pribadi tidak dipublikasikan ke repository.
+
+Satu hasil cocok B tidak membuktikan isolasi. Native/Work Profile/browser lain, pengujian 20 pergantian, reboot dan expiry belum dibuktikan. Pada versi organizer baru, pengguna memilih akun aktif di Flow sendiri dan BYGA melaporkan konfirmasi historis secara jujur.
+
+### Keputusan baseline Phase 0 (arsip)
 
 Gate tetap **UNVERIFIED**. Tidak membangun dashboard penuh, account import/picker, isolation engine, atau workspace berdasarkan asumsi sesi independen. Tidak memublikasikan APK produksi.
 

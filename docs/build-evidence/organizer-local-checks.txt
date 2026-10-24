@@ -1,0 +1,17 @@
+BYGA v0.2.0-manual — engineering results; no Google login/isolation test.
+Scope: one browser for all accounts; account selection manual in Flow; user approved.
+Command: ./gradlew --no-daemon --stacktrace help lintDebug testDebugUnitTest assembleDebug assembleDebugAndroidTest
+Result: BUILD SUCCESSFUL in 1m12s; 23 executed, 61 up-to-date.
+Lint: No issues found.
+com.byga.flowmanager.IdentityRulesTest: tests=7, failures=0, errors=0, skipped=0
+com.byga.flowmanager.MetadataCipherTest: tests=4, failures=0, errors=0, skipped=0
+com.byga.flowmanager.organizer.AccountImportTest: tests=8, failures=0, errors=0, skipped=0
+com.byga.flowmanager.organizer.OrganizerRulesTest: tests=3, failures=0, errors=0, skipped=0
+APK bytes: 63497315
+APK SHA256: b09e5504dbe470b86666ca88ccbbabf2d391f190a47157185690aeeb73c8af72
+APK: app/build/outputs/apk/debug/app-debug.apk
+aapt: com.byga.flowmanager, 0.2.0-manual, minSdk31, targetSdk35
+apksigner verify --verbose: exit0; signature v2 valid; one signer (debug).
+Instrumentation: 11 tests compiled; local connected tests not run because no device/KVM.
+Production guard --require-go: remains blocked by UNVERIFIED isolation gate.
+CI results recorded separately when available.

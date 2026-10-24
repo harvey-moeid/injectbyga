@@ -7,6 +7,9 @@ import com.byga.flowmanager.data.PocPreferences
 import com.byga.flowmanager.data.PocRepository
 import com.byga.flowmanager.launcher.FlowLauncher
 import com.byga.flowmanager.security.MetadataCipher
+import com.byga.flowmanager.organizer.data.DashboardPreferences
+import com.byga.flowmanager.organizer.data.OrganizerDatabase
+import com.byga.flowmanager.organizer.data.OrganizerRepository
 
 class BygaApplication : Application() {
     val repository by lazy {
@@ -14,4 +17,8 @@ class BygaApplication : Application() {
     }
     val preferences by lazy { PocPreferences(this) }
     val launcher by lazy { FlowLauncher(this) }
+    val organizer by lazy {
+        OrganizerRepository(Room.databaseBuilder(this, OrganizerDatabase::class.java, "byga-organizer.db").build(), MetadataCipher())
+    }
+    val dashboardPreferences by lazy { DashboardPreferences(this) }
 }

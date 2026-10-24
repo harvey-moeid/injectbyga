@@ -1,3 +1,13 @@
+# ADDENDUM v1.1 — SATU BROWSER, PILIH AKUN MANUAL DI FLOW
+
+Keputusan pengguna terbaru pada 24 Oktober 2026: **“satu browser saja”**, setelah pilihan satu browser dengan pergantian manual dijelaskan. Ini menetapkan scope organizer/dashboard lengkap: semua akun memakai satu browser pilihan, sementara akun aktif dipilih dan diperiksa pengguna di Flow. Pilihan browser berbeda per akun sebelumnya telah digantikan.
+
+Addendum ini menggantikan kewajiban isolasi otomatis pada keputusan #2/#6 dan membuka pembangunan fitur metadata/dashboard tanpa GO isolasi. Tidak ada klaim BYGA mengendalikan sesi Google, login otomatis ke akun tertentu, atau mempertahankan sesi independen. Ketentuan lengkap: [docs/scope-manual-switching.md](docs/scope-manual-switching.md). Addendum mendahului baseline yang bertentangan; baseline asli dipertahankan di [docs/prd-baseline-v1.md](docs/prd-baseline-v1.md).
+
+**Gate isolasi tetap UNVERIFIED. Persetujuan organizer manual bukan hasil pengujian isolasi atau izin publikasi produksi.**
+
+---
+
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
 # BYGA FLOW MANAGER — Android Multi-Account Launcher
 

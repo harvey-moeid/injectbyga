@@ -1,27 +1,25 @@
-# Keamanan Phase 0
+# Keamanan organizer satu browser
 
-## Data dan batas kepercayaan
+Tidak ada backend, analytics, OAuth client, login WebView, akses cookie/token/private browser storage, root, atau Accessibility automation. Login dan pergantian akun dilakukan pengguna pada browser/Flow resmi. Account chooser Android hanya metadata email yang dipilih dengan persetujuan; tidak memakai GET_ACCOUNTS atau membaca daftar akun diam-diam.
 
-BYGA adalah pendamping pihak ketiga, bukan produk Google. Tidak ada OAuth client, backend, analytics, WebView, akses account database Android, cookie jar, session manager Google, Accessibility Service, atau pembacaan browser private data. Tidak ada permission INTERNET karena jaringan dilakukan oleh aplikasi Flow/browser eksternal. Tidak ada GET_ACCOUNTS, QUERY_ALL_PACKAGES, cross-profile privilege, atau permission storage luas.
+## Penyimpanan
 
-Yang disimpan: tiga target email, pilihan provider, histori percobaan, email yang dilihat tester, waktu, metode, versi provider, tipe profil, skenario/run, outcome, dan error code terbatas. Email dienkripsi AES-256-GCM memakai kunci Android Keystore non-exportable. AAD mengikat ciphertext ke field dan ID record; pertukaran record atau modifikasi ditolak. IV baru untuk setiap enkripsi. Kunci tidak ada di repository. Hardware backing/StrongBox bergantung perangkat dan tidak diklaim selalu tersedia.
+Email, alias, catatan proyek, nama grup, target launch dan email aktual dari konfirmasi dienkripsi AES-256-GCM dengan Android Keystore. IV acak tiap enkripsi, AAD field/record; ciphertext yang dimodifikasi/dipertukarkan ditolak. Key tidak diekspor atau dikomit. Hardware backing tergantung perangkat dan tidak dijamin. Key generation memakai lock lintas instance, berbagi key yang sudah ada dengan PoC agar upgrade tidak merusak data lama.
 
-Room bukan database terenkripsi seluruhnya: slot A/B/C, metode, package/version, timestamp, dan outcome tetap plaintext pada sandbox aplikasi. Enkripsi field mengurangi paparan email pada salinan DB; tidak melindungi perangkat unlocked yang telah dikompromikan atau proses BYGA yang dikuasai penyerang. UI menampilkan email untuk tujuan pemeriksaan; screenshot bisa memuat PII, sehingga bukti publik harus disamarkan. Tidak ada PIN/biometrik di fase eksperimen.
+Room bukan full database encryption: UUID, group membership, favorit, warna, timestamp, package/version dan outcome tetap plaintext dalam sandbox Android. Enkripsi tidak melindungi proses/perangkat yang sudah dikuasai penyerang. Backup cloud/device-transfer dikecualikan. Tidak ada fallback plaintext ketika Keystore rusak/hilang; reset data Android menghapus metadata.
 
-## Penyimpanan, backup, dan ekspor
+Kunci dashboard opsional menggunakan Android BiometricPrompt (BIOMETRIC_STRONG atau DEVICE_CREDENTIAL). Tidak membuat/menyimpan PIN sendiri atau password Google. Dashboard dan Lab sama-sama memeriksa lock; state unlock tidak dipersistenkan dan hilang ketika aplikasi ditinggalkan. Biometrik/PIN, proses mati, dan OEM behavior perlu diuji pada HP nyata. Tanpa kunci aktif, siapa pun dengan akses ke aplikasi dapat membaca metadata di UI.
 
-Backup cloud dan device transfer aplikasi dikecualikan secara eksplisit agar ciphertext tidak dipindahkan tanpa kunci. Tidak ada fallback plaintext bila Keystore gagal. Key loss/ciphertext rusak menghasilkan error; pemulihan melalui hapus data aplikasi Android menghapus bukti lokal. Jangan uninstall sebelum mengekspor bukti yang diperlukan.
+## Impor/ekspor dan hapus
 
-Ekspor JSON hanya melalui Android CreateDocument (Storage Access Framework), tanpa email, target login, cookie, atau catatan bebas. Laporan berisi model perangkat/provider/version, timestamp dan hasil pseudonim A/B/C; tetap bisa bersifat sensitif secara operasional, pilih lokasi penyimpanan dengan sadar. Penghapusan lokal menghapus metadata BYGA saja; tidak logout atau menghapus akun Google, dan tidak menghapus file ekspor terdahulu. Penghapusan SQLite bukan janji secure erasure forensik.
+Impor CSV/TXT lewat Storage Access Framework dibatasi2 MB/5.000 baris dan UTF-8 ketat, tanpa persist URI permission yang tidak diperlukan. Hanya header email/alias/group; header tak dikenal (password/OTP/cookie/token) ditolak. Raw baris invalid tidak ditampilkan/dicatat; preview menampilkan metadata valid dan line/reason penolakan. Impor recheck duplikat secara atomik dan tidak menimpa akun lama.
 
-Tidak ada logging PII/exception mentah dari aplikasi. Kode error seperti `PROVIDER_UNAVAILABLE`, `ACTIVITY_NOT_FOUND`, `POLICY_DENIED` dibatasi. Jangan mengunggah `logcat` atau screenshot tanpa menyamarkan email/token/URL pribadi. Diagnostik build tidak mengandung kredensial login pengguna.
+Ekspor CSV hanya email, alias dan grup. Pengguna mengonfirmasi bahwa file mengandung metadata pribadi dalam plaintext, lalu memilih lokasi. Formula spreadsheet yang diawali=,+,-,@ dinetralkan dengan apostrof, kutipan di-escape. Apostrof literal dapat terbawa saat reimport; ekspor ini daftar akun, bukan full backup seluruh preferensi/history/favorit/catatan.
 
-## Autentikasi
+Hapus akun menghapus metadata dashboard dan riwayat terkait melalui foreign-key cascade; hapus grup hanya melepas membership. Tidak logout, menghapus Google Account, mengubah sesi browser, menghapus data PoC terpisah, atau file ekspor lama. SQLite delete bukan klaim secure forensic erasure.
 
-Pengguna login sendiri pada Flow/browser resmi. Email target hanya disimpan lokal dan tidak disisipkan ke URL, `authuser`, private Intent extra, atau deep link yang ditebak. Package native mengikuti referensi Play PRD; install dari publisher Google Labs resmi. Deteksi package bukan verifikasi tanda tangan publisher dan bukan bukti login. Default Custom Tabs berbagi sesi browser, sehingga tab tidak diperlakukan sebagai profil terisolasi. BYGA tidak menjanjikan aktivitas video background.
+## Identitas dan diagnostik
 
-## CI dan signing
+Intent browser memuat hanya URL Flow HTTPS dan package provider yang dipilih untuk semua akun. Tidak ada email, authuser atau token pada URI/extras. Browser tidak tersedia tidak dialihkan diam-diam. Konfirmasi manual bukan verifikasi otomatis; status akun aktif sekarang selalu tidak diketahui. Error storage/import/crypto dilaporkan melalui pesan aman; aplikasi tidak log exception mentah/email. Jangan mengunggah screenshot/log yang berisi PII tanpa penyamaran.
 
-Gradle wrapper dan checksum distribusi dikomit; validasi wrapper via gradle/actions/setup-gradle. CI hanya membangun APK debug eksperimen. Secrets `BYGA_KEYSTORE_BASE64`, `BYGA_KEYSTORE_PASSWORD`, `BYGA_KEY_ALIAS`, `BYGA_KEY_PASSWORD` hanya dipakai workflow manual setelah gate GO. Keystore decode ke runner temp, permission ketat, dihapus dengan `if: always()`. Jangan commit local.properties, keystore, password, APK, atau account test credentials.
-
-Workflow release tidak menerbitkan GitHub Release/Play Store; hanya signed candidate artifact setelah gate. Konfigurasikan protected branch dan required reviewer pada environment `production` untuk review bukti yang nyata. Script gate hanya guard konfigurasi; tidak bisa menggantikan penilaian manusia atas bukti. Tetapkan CODEOWNERS/branch protection sesuai pemilik repository saat tim tersedia.
+CI hanya memakai data sintetik. Gradle wrapper/checksum dipin; lint error tetap fatal dan version warnings terlihat. APK debug untuk uji. Workflow signing manual tetap memerlukan gate review dan Secrets; key decode hanya ke runner temp lalu dihapus. Tidak ada secret, keystore atau password di repository dan tidak ada publikasi produksi/merge otomatis.

@@ -10,9 +10,10 @@ import org.junit.runner.RunWith
 /** Never launches Google or handles real credentials. UI safety check only. */
 @RunWith(AndroidJUnit4::class)
 class PocUiSmokeTest {
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule val compose = createAndroidComposeRule<PocActivity>()
 
     @Test fun gateRemainsUnverifiedAndLaunchWarningCanBeCancelled() {
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("UNVERIFIED").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("UNVERIFIED").assertIsDisplayed()
         compose.waitUntil(10_000) {
             compose.onAllNodesWithText("Memuat metadata lokal…").fetchSemanticsNodes().isEmpty()

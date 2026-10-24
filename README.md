@@ -1,83 +1,74 @@
 # BYGA Flow Manager
 
-APK Android eksperimen **Phase 0** untuk meneliti pembukaan Google Flow dengan target akun A/B/C. **Feasibility gate: UNVERIFIED**. Belum ada bukti sesi Google Flow independen pada perangkat nyata; aplikasi penuh sesuai PRD belum dibangun.
+Aplikasi Android lokal untuk mengelola banyak akun dan membuka Google Flow melalui **satu browser pilihan**. Pengguna **memilih akun aktif secara manual di Flow**. Ini keputusan terbaru pengguna; lihat [scope yang disetujui](docs/scope-manual-switching.md).
 
-PoC menyediakan tiga slot email, rute native/Custom Tabs/browser terpilih/profil kerja yang tersedia, peringatan sebelum membuka, konfirmasi email yang benar-benar dilihat tester, hasil MISMATCH, riwayat persisten, seri uji, serta ekspor JSON tanpa email. Tidak melakukan login Google dan tidak menjamin akun yang dipilih menjadi akun aktif Flow.
+BYGA menyimpan metadata, bukan sesi Google. Memilih kartu tidak menjamin Flow sudah memakai akun tersebut. Tidak ada password, OTP, cookie/token Google, login WebView, root, atau backend.
 
-## Persyaratan
+## Fitur versi 0.2.0-manual
 
-- HP Android 12+ (API 31), tiga akun Google milik tester yang memenuhi akses Flow, dan koneksi internet.
-- Pasang [Google Flow resmi dari Google Labs](https://play.google.com/store/apps/details?id=com.google.android.apps.labs.whisk) untuk uji native terlebih dahulu; Chrome/browser kompatibel untuk uji browser.
-- Work Profile hanya opsional jika telah disediakan admin. Tidak perlu root, ADB, Shizuku, backend, atau API key untuk memakai PoC.
+- Dashboard dengan avatar inisial/warna, alias/email, catatan proyek, grup, favorit, pencarian, pengurutan nama/email/terakhir/favorit, list/grid dan aksi massal pindah/hapus.
+- Tambah manual; pemilih akun Google Android berbasis persetujuan (metadata saja); impor CSV/TXT dengan preview, validasi, duplicate detection dan laporan penolakan. Batas 2 MB/5.000 baris per impor.
+- Satu browser terpilih berlaku untuk semua akun. Target dan instruksi pemilihan manual selalu ditampilkan sebelum Flow dibuka. Tidak ada fallback browser diam-diam.
+- Riwayat dispatch dan konfirmasi identitas manual; email aktual yang berbeda menjadi MISMATCH. Tidak menganggap konfirmasi historis sebagai sesi sekarang.
+- Room untuk metadata/history, DataStore untuk preferensi, Android Keystore AES-GCM untuk email/alias/catatan/nama grup dan snapshot identitas.
+- Kunci dashboard opsional memakai biometrik atau PIN/pola/password perangkat, tanpa PIN Google di BYGA. Aktif setelah autentikasi Android dan mengunci kembali saat aplikasi ditinggalkan.
+- Ekspor CSV email/alias/grup melalui pemilih lokasi Android. File ini mengandung metadata pribadi dalam plaintext dan tidak mencakup favorit/catatan/warna/history.
+- Lab PoC lama tetap ada di Pengaturan. Metadata/riwayat PoC tidak dihapus ketika upgrade; tersedia preview penyalinan akun PoC ke dashboard.
 
-## Instalasi APK eksperimen
+## Pasang dan mulai
 
-[Unduh APK eksperimen dari CI](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540280828) — artifact `BYGA-Flow-Manager-Debug-APK`, dibangun pada 24 Oktober 2026 UTC. Unduhan berupa ZIP; ekstrak APK sebelum dipasang. Artifact Actions memiliki masa berlaku dan dapat memerlukan login GitHub.
+Android minimum 12/API 31. Pasang browser kompatibel dari sumber resmi, lalu login ke akun Google/Flow melalui browser tersebut. BYGA tidak melakukan login Google.
 
-1. Buka tab **Actions → Android CI** pada repository GitHub dan pilih run yang berhasil.
-2. Unduh artifact **BYGA-Flow-Manager-Debug-APK** (ZIP) dan ekstrak `app-debug.apk`.
-3. Pindahkan ke HP, buka APK, lalu izinkan pemasangan dari sumber tersebut melalui UI Android bila diminta. Ini debug build untuk eksperimen; bukan APK produksi.
-4. Buka **BYGA Flow Manager**. Jika memperbarui build, tanda tangan debug dari runner lain mungkin berbeda; konflik tanda tangan membutuhkan uninstall yang menghapus metadata lokal. Ekspor bukti terlebih dahulu. Jangan mengganti signing produksi dengan debug key.
+1. Unduh artifact **BYGA-Flow-Manager-Debug-APK** dari run **Android CI** yang berhasil pada [GitHub Actions](https://github.com/harvey-moeid/injectbyga/actions). Ekstrak ZIP dan pasang `app-debug.apk` melalui UI Android. Debug APK adalah build uji, bukan publikasi produksi.
+2. Buka Pengaturan BYGA dan pilih browser yang akan dipakai semua akun.
+3. Tambah metadata akun melalui tombol Tambah akun atau impor. Jika memperbarui PoC, gunakan Pengaturan → Preview salin akun PoC lama.
+4. Pilih kartu akun, baca target email dan tekan Buka Flow. **Pilih akun tersebut secara manual di Flow** dan periksa email aktif sebelum membuat proyek.
+5. Kembali ke BYGA untuk mencatat email yang benar-benar terlihat atau permintaan login/expiry. Konfirmasi bukan verifikasi otomatis.
 
-APK hasil build lokal berada di `app/build/outputs/apk/debug/app-debug.apk`. Status build aktual, lokasi artifact, checksum dan batas validasi dicatat di [docs/testing.md](docs/testing.md). Keberadaan workflow tidak berarti GitHub Actions sudah berhasil menjalankannya.
+Apabila signature debug dari runner berbeda, Android mungkin meminta uninstall sebelum memasang build lain. Uninstall menghapus metadata BYGA; ekspor daftar terlebih dahulu jika diperlukan. Akun Google/sesi browser tetap dimiliki Google/browser. Satu browser dapat meminta login ulang sesuai kebijakan Google; BYGA tidak menjanjikan persistensi sesi atau generasi video background.
 
-## Penggunaan PoC
+## Impor dan ekspor
 
-1. Di Eksperimen, atur email yang diharapkan pada Account A/B/C dan metode pembukanya. Email hanyalah metadata target, bukan kredensial login.
-2. Mulai seri uji baru (native lebih dahulu). Login awal dilakukan sendiri di Flow/browser resmi.
-3. Tekan **Buka Flow**, baca peringatan, lalu periksa menu akun aktif di Flow sebelum mengganti akun secara manual.
-4. Kembali ke BYGA dan tekan **Catat identitas yang terlihat**. Ketik email aktual, termasuk bila salah. Target B tetapi email A tercatat sebagai **MISMATCH**. Login prompt/expiry/identitas tak diketahui memiliki hasil tersendiri.
-5. Lanjutkan urutan A→B→C, C→A→B, ≥20 perpindahan, restart aplikasi/Android dan expiry. Ikuti [protokol lengkap](docs/poc-test-plan.md); jangan memperbaiki akun diam-diam sebelum mencatat hasil.
-6. Ekspor JSON dari Riwayat dan sertakan bukti layar/video tersamarkan untuk review. Konfirmasi cocok adalah historis; pembukaan berikutnya perlu diperiksa ulang. Gate tidak otomatis berubah menjadi GO.
+CSV UTF-8 dengan header (alias/group opsional):
 
-Tidak ada password/OTP/cookie/token Google yang diminta atau disimpan. Hapus metadata hanya menghapus data BYGA, bukan akun Google atau sesi browser. Tidak ada jaminan generasi video terus berjalan di background.
+```csv
+email,alias,group
+akun1@gmail.com,Flow Utama,Konten
+akun2@gmail.com,Flow Eksperimen,Eksperimen
+```
 
-## Build dan pengujian
+TXT UTF-8: satu email per baris. Baris invalid/duplikat dilaporkan dalam preview tanpa menampilkan isi baris ditolak. Header tak dikenal, termasuk kolom password/OTP/token/cookie, menolak seluruh file. Impor tidak menimpa akun yang sudah ada. CSV mendukung kutipan, koma dan escaped quotes; formula spreadsheet pada ekspor dinetralkan dengan awalan apostrof (awalan literal dapat terbawa jika diimpor ulang).
 
-Pasang JDK 17 dan Android SDK (compile 35, build-tools 35.0.0, platform-tools). Android Studio dapat menyediakannya. Atur `ANDROID_HOME` atau buat `local.properties` berisi `sdk.dir=/path/ke/android-sdk` (jangan commit file tersebut).
+Penghapusan akun hanya menghapus metadata dashboard dan riwayat terkait. Penghapusan grup memindahkan anggotanya menjadi tanpa grup. Data PoC lama, akun Google, sesi browser dan file ekspor yang sudah dibuat tidak ikut dihapus.
+
+## Build
+
+Gunakan JDK 17 lengkap, Android SDK platform 35 dan build-tools 35.0.0; minimum runtime Android 31. Atur ANDROID_HOME atau local.properties dengan sdk.dir (jangan commit local.properties).
 
 ```bash
-chmod +x gradlew
 ./gradlew --no-daemon --stacktrace help lintDebug testDebugUnitTest assembleDebug assembleDebugAndroidTest
 python3 scripts/check_feasibility_gate.py
 ```
 
-Windows: gunakan `gradlew.bat`. Wrapper Gradle disertakan dan checksum distribusi dipin. Akses Maven Central, Google Maven dan distribusi Gradle diperlukan untuk build awal. Build cloud memakai proxy/toolchain lokal lingkungan; tidak perlu mengubah repository untuk itu.
-
-Uji persistence/Keystore pada perangkat uji atau emulator yang terhubung untuk pengembangan:
+Windows gunakan gradlew.bat. APK lokal: `app/build/outputs/apk/debug/app-debug.apk`. Untuk perangkat/emulator pengembangan:
 
 ```bash
 ./gradlew connectedDebugAndroidTest
 ```
 
-Perintah instrumentation bukan ketergantungan pengguna aplikasi. Tes ini memakai email sintetik dan **tidak menguji autentikasi Google atau isolasi sesi**. Pengujian identitas wajib HP nyata sesuai [poc-results.md](docs/poc-results.md).
+Tes otomatis memakai metadata sintetik dan tidak membuktikan login Google. Hasil aktual dan artifact: [docs/testing.md](docs/testing.md).
 
-## CI dan signing
+## CI, scope dan rilis
 
-[Android CI](.github/workflows/android-ci.yml) berjalan pada push dan PR: setup JDK/SDK, validasi wrapper/konfigurasi, lint, unit tests, assembleDebug, kompilasi test APK, upload APK dan laporan. Tidak memakai secret pada PR.
+CI push/PR: JDK/SDK, validasi wrapper/Gradle, lint (error fatal; warning terlihat), unit test, build APK, upload artifact, serta instrumentation pada emulator API 31. Signing candidate manual membutuhkan GitHub Secrets BYGA_KEYSTORE_BASE64, BYGA_KEYSTORE_PASSWORD, BYGA_KEY_ALIAS, BYGA_KEY_PASSWORD dan gate produksi yang ditinjau. Tidak ada keystore/password di repository, merge otomatis atau publikasi produksi.
 
-[Manual signed APK](.github/workflows/apk-release.yml) diblokir selama `docs/feasibility-gate.json` bukan GO. Setelah bukti ditinjau dan gate diperbarui, konfigurasikan environment GitHub `production` dengan required reviewer dan secrets:
+Gate **isolasi otomatis tetap UNVERIFIED**. Persetujuan satu-browser/manual membuka pengembangan organizer; tidak menyatakan kebutuhan isolasi baseline telah terpenuhi. Workflow produksi tetap diblokir sebelum GO/review. PRD baseline dan bukti Phase 0 dipertahankan sebagai arsip.
 
-- `BYGA_KEYSTORE_BASE64`
-- `BYGA_KEYSTORE_PASSWORD`
-- `BYGA_KEY_ALIAS`
-- `BYGA_KEY_PASSWORD`
-
-Keystore hanya didecode dalam runner temp dan dihapus setelah job. Workflow menghasilkan signed candidate artifact, tanpa GitHub Release/Play Store publishing dan tanpa merge otomatis. Jangan menaikkan gate hanya untuk membuka workflow.
-
-## Struktur dan cakupan
-
-`app/` berisi Compose → ViewModel → Repository → Room/DataStore/Keystore dan `FlowLauncher`. Android minSdk 31, package `com.byga.flowmanager`. Warna navy `#080D19`, blue `#246BFD`, cyan `#16DBEE`; UI Bahasa Indonesia.
-
-Dokumen utama:
-
-- [PRD asli — keputusan #1–#7](PRD.md)
-- [Arsitektur dan batas Phase 0](docs/architecture.md)
-- [Rencana uji perangkat nyata](docs/poc-test-plan.md)
-- [Hasil PoC dan feasibility gate](docs/poc-results.md)
+- [PRD dan addendum](PRD.md)
+- [Scope satu browser yang disetujui](docs/scope-manual-switching.md)
+- [Arsitektur](docs/architecture.md)
 - [Keamanan](docs/security.md)
-- [Hasil engineering dan petunjuk tes](docs/testing.md)
-- [Laporan implementasi dan inventori file](docs/delivery-report.md)
-- [Checklist acceptance](docs/acceptance-checklist.md)
-
-Dashboard lengkap, account picker, impor CSV/TXT, grup, favorit, pencarian dan workspace menunggu **GO berbukti**. Kartu A/B/C pada PoC tidak menggantikan kebutuhan isolasi sesi produk penuh.
+- [Testing](docs/testing.md)
+- [Acceptance](docs/acceptance-checklist.md)
+- [Laporan implementasi](docs/delivery-report.md)
+- [Hasil isolasi/PoC](docs/poc-results.md)

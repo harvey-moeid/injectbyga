@@ -1,35 +1,37 @@
-# Checklist penerimaan
+# Acceptance versi satu browser/manual
 
-## Phase 0 engineering
+Keputusan produk aktif: scope-manual-switching.md dan addendum PRD. Checklist implementasi tidak menyatakan seluruh tes HP telah dijalankan.
 
-- [x] PRD dibaca dan disalin utuh; keputusan #1–#7 dipertahankan.
-- [x] Kotlin + Compose Material 3, min API 31, package `com.byga.flowmanager`.
-- [x] Tiga slot A/B/C, target email, konfigurasi rute/provider dan Buka Flow.
-- [x] Native, Custom Tabs, browser eksplisit, serta guard profil kerja.
-- [x] Peringatan kemampuan sebelum launch; tidak ada fallback otomatis yang mengubah rute.
-- [x] Identity confirmation manual dengan input email aktual dan MISMATCH bila salah.
-- [x] Tidak ada klaim verifikasi otomatis atau isolasi palsu.
-- [x] Room history/config, DataStore preferensi/seri, Keystore untuk enkripsi email.
-- [x] Rencana pengujian dan laporan UNVERIFIED/BLOCKED yang jujur.
-- [x] Ekspor JSON tanpa email melalui pemilih lokasi Android.
-- [x] Workflow push/PR untuk lint, tests, debug APK artifact.
-- [x] Workflow signing manual diblokir sebelum GO; tanpa publikasi otomatis.
+## Diimplementasikan
 
-## Bukti wajib sebelum GO (belum terpenuhi)
+- [x] Dashboard metadata banyak akun, avatar inisial/warna, email/alias/catatan, grup dan favorit.
+- [x] Search, sorting nama/email/terakhir/favorit, filter grup/favorit, list/grid tersimpan.
+- [x] Tambah/edit/hapus akun; aksi massal pindah grup/hapus dengan konfirmasi hapus.
+- [x] Group create/rename/delete; hapus grup menjaga akun tetap ada.
+- [x] Android account chooser resmi, metadata saja, pembatalan/fallback tambah manual.
+- [x] Import CSV/TXT via SAF, UTF-8 ketat, preview, validation, duplicate detection/recheck dan report penolakan.
+- [x] Satu browser global, target dan instruksi pemilihan akun manual sebelum setiap launch, tanpa fallback diam-diam.
+- [x] Riwayat launch dan observasi manual; mismatch tidak ditampilkan sebagai cocok; konfirmasi lama tidak dianggap sesi sekarang.
+- [x] Room, DataStore dan Keystore, enkripsi metadata sensitif; backup dikecualikan.
+- [x] Kunci dashboard/Lab opsional dengan credential Android/biometrik, tanpa menyimpan PIN sendiri.
+- [x] Ekspor CSV email/alias/grup dengan peringatan metadata plaintext dan formula neutralization.
+- [x] PoC lama dipertahankan; salin metadata melalui preview eksplisit.
+- [x] Workflow CI/debug artifact, signing secrets manual, tidak merge/publish otomatis.
 
-- [ ] A → B → C dan C → A → B, identitas aktual benar semua.
-- [ ] ≥20 perpindahan berurutan tanpa salah akun/koreksi manual.
-- [ ] Sesi independen dan persistensi setelah restart BYGA/Android.
-- [ ] Expiry satu akun tidak mengganggu lainnya.
-- [ ] Bukti layar/video dan JSON dikaitkan dengan versi perangkat/provider.
-- [ ] Hasil per rute ditinjau; GO penuh atau batas CONDITIONAL GO dicatat.
-- [ ] Uji aksesibilitas/font besar/responsivitas/performa pada HP entry-level.
+## Bukti engineering
 
-## Full application (ditunda sesuai gate)
+Lihat testing.md untuk hasil build, 22 JVM unit tests dan instrumentation yang benar-benar dijalankan. Jumlah tes yang tersedia bukan klaim semua tes telah berjalan.
 
-- [ ] Dashboard 50 akun, avatar/alias, grup/favorit/search/sort/list-grid.
-- [ ] Manual add / Android account picker / preview CSV dan TXT dengan validasi.
-- [ ] Workspace/restore yang sesuai kemampuan terbukti dan re-auth resmi.
-- [ ] Pengujian acceptance PRD §15 dan rilis setelah GO.
+## Wajib pada HP sebelum menyebut versi manual siap produksi
 
-Status build, unit test, lint, instrumentation, dan artifact aktual: lihat `testing.md`. Checklist kode tersedia bukan klaim fitur sudah diuji pada Android atau memenuhi scope penuh.
+- [ ] Flow/browser aktual, pemilih akun perangkat dan pemilihan akun manual benar.
+- [ ] Force-stop/reboot/upgrade signature sama mempertahankan metadata.
+- [ ] Biometrik/PIN, background-return, rotasi/proses mati dan OEM restrictions.
+- [ ] Offline/import/export SAF, font besar, aksesibilitas dan performa50 akun pada entry-level.
+- [ ] Review keamanan dan ketentuan rilis; produksi tetap diblokir.
+
+## Isolasi baseline
+
+- [ ] Sesi A/B/C independen dan auto target account: UNVERIFIED, bukan kemampuan versi manual.
+- [ ]20 perpindahan/reboot/expiry tanpa intervensi: belum dibuktikan untuk isolasi.
+- [ ] GO isolasi: tidak diberikan oleh persetujuan scope atau hasil unit/emulator.

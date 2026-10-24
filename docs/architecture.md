@@ -1,50 +1,42 @@
-# Arsitektur Phase 0
+# Arsitektur organizer satu browser
 
-Status produk: **UNVERIFIED**, bukan implementasi penuh PRD. Package `com.byga.flowmanager`, Android 12/API 31+, Kotlin, Compose Material 3, MVVM. Tidak ada backend.
+Scope aktif: [scope-manual-switching.md](scope-manual-switching.md), disetujui pengguna dengan “satu browser saja”. Kotlin, Compose Material 3, MVVM, Room, DataStore, Android Keystore, min API31, package com.byga.flowmanager. Tidak ada backend.
 
 ```mermaid
 flowchart TD
-    UI[Compose: eksperimen / riwayat / panduan] --> VM[PocViewModel]
-    VM --> Repository[PocRepository]
-    Repository --> DB[Room: slots + trials]
-    Repository --> Crypto[AES-GCM / Android Keystore]
-    VM --> Preferences[Preferences DataStore: skenario, seri, panduan]
-    VM --> Launcher[FlowLauncher: capability + public Android Intent]
-    Launcher --> Native[Flow native: launcher activity]
-    Launcher --> Browser[HTTPS: Custom Tabs / browser eksplisit]
-    Browser --> Google[Autentikasi dikelola Google dan browser]
+    UI[Dashboard / Grup / Riwayat / Pengaturan] --> VM[DashboardViewModel]
+    VM --> Repo[OrganizerRepository]
+    Repo --> DB[Room: byga-organizer.db]
+    Repo --> Crypto[AES-GCM Android Keystore]
+    VM --> Prefs[DataStore: satu browser / tampilan / sort / filter / lock]
+    VM --> Launcher[FlowLauncher: package browser eksplisit]
+    Launcher --> Browser[Browser pilihan seluruh akun]
+    Browser --> Manual[Pengguna memilih akun aktif di Flow]
+    Lab[Lab PoC lama] --> Old[byga-poc.db tetap terpisah]
 ```
 
-## Batas fase
+## Data
 
-Tiga slot A/B/C adalah target identitas untuk percobaan. Menyimpan email tidak menambah akun Google, membuat sesi, atau melakukan login. Dashboard lengkap, importer, account picker, grup, favorit, workspace dan PIN/biometrik ditunda sampai GO sesuai PRD §13–14; tidak ada tombol placeholder fitur tersebut.
+managed_accounts: UUID, payload email/alias/catatan terenkripsi, groupId, favorite, color, timestamps. managed_groups: UUID dan nama terenkripsi. managed_launches: snapshot target terenkripsi, accountId, provider/version, timestamp, outcome, pengamatan terenkripsi dan waktu konfirmasi. Foreign key grup SET NULL saat grup dihapus; akun CASCADE riwayat saat metadata akun dihapus. Payload AES-GCM diikat dengan AAD field/ID. Semua enkripsi/dekripsi dan database berada pada IO dispatcher.
 
-## Peluncuran dan identitas
+Deduplikasi email dilakukan dalam transaksi Room atas email ternormalisasi (tanpa menghapus dot/plus). Upsert mempertahankan lastOpenedAt/createdAt saat edit. Impor melakukan recheck duplikat saat commit dan transaksi atomik, sehingga perubahan dashboard selama preview tidak menyebabkan overwrite. Snapshot launch tidak berubah ketika metadata akun diedit. Snapshot identitas target yang sudah berubah ditolak sebelum dispatch.
 
-1. Tester menyimpan email serta rute/provider per slot. Email divalidasi dan duplikat identik dicegah tanpa menghapus titik atau plus-addressing.
-2. Dialog menjelaskan bahwa akun sebenarnya bisa berbeda. Email target tidak dikirim melalui Intent atau URL.
-3. Repository menyimpan snapshot immutable identitas target, provider/version, profil, skenario, run ID, timestamp. Pending lama menjadi `ABANDONED` dalam transaksi yang sama.
-4. `STARTING` disimpan sebelum peluncuran. Dispatch berhasil hanya menghasilkan `UNVERIFIED`; provider hilang `BLOCKED`; aktivitas/policy menolak `FAILED`. Tidak ada fallback diam-diam.
-5. Tester kembali, melihat akun aktif di Flow, lalu mengetik email yang benar-benar terlihat. Hanya pending terbaru dapat direview. Email berbeda menghasilkan `MISMATCH`. Login prompt, pesan sesi habis, atau tidak dapat diperiksa disimpan terpisah.
-6. Konfirmasi manual hanya bukti historis satu pembukaan. UI selalu mengatakan sesi sekarang belum diketahui. Restart tidak mengubah riwayat menjadi bukti sesi baru. Proses mati ketika dispatch berlangsung meninggalkan `STARTING` yang jujur sebagai hasil belum diketahui; pembukaan baru menggantikannya.
+## Launch dan status
 
-`VERIFIED_AUTOMATED` tidak diimplementasikan. Gate UI dan laporan ekspor selalu UNVERIFIED sampai bukti eksternal ditinjau; jumlah konfirmasi cocok tidak menaikkan gate otomatis.
+Browser disimpan sekali pada DataStore, berlaku untuk seluruh akun. UI menampilkan target dan instruksi pemilihan akun manual sebelum dispatch. ACTION_VIEW hanya URL HTTPS Flow, package browser eksplisit, tanpa email/authuser/token/cookie. Provider hilang/ditolak menjadi BLOCKED/FAILED, tanpa fallback.
 
-## Rute
+STARTING disimpan sebelum dispatch; dispatch berhasil hanya UNVERIFIED. lastOpenedAt berubah hanya jika dispatch berhasil, bukan bukti akun login. Pembukaan baru menjadikan pending lama ABANDONED. Hanya pending terbaru dapat dikonfirmasi. Input email aktual menjadi VERIFIED_MANUAL atau MISMATCH; login prompt, expiry yang dilaporkan jelas, dan UNKNOWN terpisah. UI selalu melabeli hasil sebagai historis. Tidak ada penentuan expiry berdasarkan waktu.
 
-- Native: package dari referensi Google Play `com.google.android.apps.labs.whisk`, melalui `PackageManager.getLaunchIntentForPackage`. Membuka layar utama tanpa extra akun atau deep link privat. Kehadiran package tidak dianggap bukti tanda tangan publisher; install dari Play resmi.
-- Custom Tabs: hanya browser yang mengekspos layanan Custom Tabs. Provider dipin dengan `setPackage`. Tidak menggunakan ephemeral/incognito sebagai solusi persisten.
-- Browser: HTTPS `https://labs.google/fx/tools/flow`, provider eksplisit yang dipilih tester; redirect/navigasi selanjutnya dimiliki browser/Google.
-- Work Profile: hanya dari salinan BYGA yang sudah berjalan di managed profile. Tidak provisioning profil, menjadi device owner, meminta privileged permission, atau menyeberang profil otomatis. Profil kerja menguji browser pada profil saat ini; native dari profil kerja dapat diuji dengan rute native. Dua profil tidak membuktikan A/B/C independen.
+## UI dan preferensi
 
-## Persistensi dan kegagalan
+Dashboard menampilkan avatar inisial/warna, alias/email/grup, favorit, pencarian, sorting, list/grid responsif dan aksi massal. Filter grup, sorting dan mode tampilan dipulihkan melalui DataStore; ini pemulihan workspace lokal, bukan proyek Flow. Account picker Android memperoleh metadata dengan persetujuan pengguna melalui official chooser, tanpa GET_ACCOUNTS atau Google OAuth token.
 
-Room menyimpan konfigurasi tiga slot dan semua percobaan. Email target/terlihat dienkripsi per nilai dengan Android Keystore AES-256-GCM, IV acak, dan AAD berbeda per record/field. Metadata diagnostik lainnya tetap plaintext di sandbox Android. DataStore menyimpan preferensi nonrahasia. IO dan crypto dilakukan di dispatcher IO; penulisan bukti atomik lewat transaksi Room. Tidak ada destructive migration otomatis.
+Impor memakai Storage Access Framework, UTF-8 ketat, maksimal2 MB/5.000 baris. CSV parser defensif, header whitelist, preview dan daftar line/reason tanpa raw invalid content. Ekspor CSV hanya email/alias/grup dengan formula neutralization dan konfirmasi plaintext metadata. Favorit/catatan/warna/history tidak dicakup ekspor CSV ini.
 
-Kegagalan storage, crypto, provider, dan ekspor dilaporkan dengan pesan aman tanpa exception berisi PII. Keystore tidak tersedia/rusak tidak menyebabkan fallback plaintext. Metadata dapat dihapus melalui Pengaturan Android bila kunci hilang. UI menampilkan loading, empty, busy, pending, dan error snackbar. Room schema version 1 diekspor untuk review.
+SecureBygaActivity melindungi dashboard dan Lab dengan preferensi kunci yang sama. BiometricPrompt memakai biometrik kuat atau credential perangkat; autentikasi diperlukan sebelum mengaktifkan kunci, dan state unlock berada di memori. App ditinggalkan → lock; setelah kembali dari browser/SAF perlu unlock jika aktif. Tidak menyimpan PIN/password sendiri.
 
-## Toolchain terkunci
+## Upgrade
 
-Gradle 8.11.1 (wrapper SHA-256), AGP 8.9.2, Kotlin 2.1.20, KSP 2.1.20-1.0.32, Compose BOM 2025.04.01, Room 2.7.1, DataStore 1.1.4, Browser 1.8.0. Versi stabil dipin; bukan klaim bahwa versi tersebut paling baru. compile/target SDK 35, source/target JVM 17; CI JDK 17.
+Versi0.2.0 memakai database organizer baru versi1. Database PoC versi1 dan key alias lama dipertahankan agar metadata lama dapat dibaca. Key generation disinkronkan lintas instance untuk mencegah penggantian key pada startup bersamaan. Lab dapat dibuka melalui Pengaturan; penyalinan metadata PoC ke dashboard melalui preview/konfirmasi eksplisit dan deduplikasi. Tidak memigrasikan konfirmasi PoC menjadi bukti sesi baru.
 
-Lint memakai `abortOnError = true`; rekomendasi versi/target tetap warning yang terlihat, tidak dijadikan error atau disembunyikan. Review pembaruan toolchain/target/dependensi dan regresi Android terbaru sebelum produksi setelah GO.
+Arsitektur Phase0 terdahulu: [phase0-architecture.md](phase0-architecture.md). Gate isolasi tetap UNVERIFIED, bukan blocker organizer manual yang telah disetujui. Produksi tidak dipublikasikan otomatis.

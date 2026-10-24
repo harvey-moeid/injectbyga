@@ -29,10 +29,10 @@ class MetadataCipher(private val keyProvider: () -> SecretKey = AndroidKeyProvid
 }
 
 private class AndroidKeyProvider {
-    @Synchronized fun get(): SecretKey {
+    fun get(): SecretKey = synchronized(keyLock) {
         val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
-        (store.getKey(ALIAS, null) as? SecretKey)?.let { return it }
-        return KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore").apply {
+        (store.getKey(ALIAS, null) as? SecretKey)?.let { return@synchronized it }
+        KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore").apply {
             init(KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
@@ -41,5 +41,8 @@ private class AndroidKeyProvider {
                 .build())
         }.generateKey()
     }
-    companion object { const val ALIAS = "byga.poc.metadata.v1" }
+    companion object {
+        const val ALIAS = "byga.poc.metadata.v1"
+        private val keyLock = Any()
+    }
 }

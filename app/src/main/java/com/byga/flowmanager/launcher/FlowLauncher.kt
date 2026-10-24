@@ -28,7 +28,10 @@ class FlowLauncher(private val context: Context) {
         val tabs = pm.queryIntentServices(Intent("android.support.customtabs.action.CustomTabsService"), 0)
             .map { it.serviceInfo.packageName }.toSet()
         return pm.queryIntentActivities(intent, PackageManager.MATCH_ALL)
-            .map { it.activityInfo.packageName }.distinct().map { pkg ->
+            .filter { it.activityInfo.exported }
+            .map { it.activityInfo.packageName }
+            .filter { it != "android" && it != context.packageName && it != NATIVE_PACKAGE }
+            .distinct().map { pkg ->
                 val app = pm.getApplicationInfo(pkg, 0)
                 Provider(pkg, pm.getApplicationLabel(app).toString(), version(pkg), pkg in tabs)
             }.sortedBy { it.label }
@@ -65,9 +68,7 @@ class FlowLauncher(private val context: Context) {
                     tab.intent.setPackage(provider)
                     tab.launchUrl(activity, FLOW_URL.toUri())
                 }
-                LaunchMethod.BROWSER, LaunchMethod.WORK_PROFILE -> activity.startActivity(
-                    Intent(Intent.ACTION_VIEW, FLOW_URL.toUri())
-                        .addCategory(Intent.CATEGORY_BROWSABLE).setPackage(provider))
+                LaunchMethod.BROWSER, LaunchMethod.WORK_PROFILE -> activity.startActivity(externalBrowserIntent(provider))
             }
             // startActivity success proves dispatch only. No automatic authentication inference.
             LaunchResult(Outcome.UNVERIFIED)
@@ -85,5 +86,9 @@ class FlowLauncher(private val context: Context) {
     companion object {
         const val NATIVE_PACKAGE = "com.google.android.apps.labs.whisk"
         const val FLOW_URL = "https://labs.google/fx/tools/flow"
+        fun externalBrowserIntent(provider: String): Intent {
+            require(provider.isNotBlank())
+            return Intent(Intent.ACTION_VIEW, FLOW_URL.toUri()).addCategory(Intent.CATEGORY_BROWSABLE).setPackage(provider)
+        }
     }
 }
