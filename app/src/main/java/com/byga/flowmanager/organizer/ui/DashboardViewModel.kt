@@ -156,7 +156,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         val entry = withContext(Dispatchers.IO) { repo.begin(account.id, browser, capability.version, account.email) }
         val result = app.launcher.open(activity, LaunchMethod.BROWSER, browser)
         withContext(Dispatchers.IO) { repo.finish(entry, result.outcome, result.code) }
-        notify(if (result.outcome == Outcome.UNVERIFIED) "Flow dibuka. Pilih akun yang dimaksud secara manual di Flow, lalu periksa identitasnya."
+        notify(if (result.outcome == Outcome.UNVERIFIED) "Tautan Flow dikirim ke browser. Pilih akun yang dimaksud secara manual di Flow, lalu periksa identitasnya."
             else "Browser pilihan tidak dapat membuka Flow. Tidak ada pengalihan ke browser lain.")
     }
     fun review(id: String, observation: Observation, observed: String, done: () -> Unit) = operation("Konfirmasi ditolak. Periksa email aktual dan pembukaan terbaru.") {

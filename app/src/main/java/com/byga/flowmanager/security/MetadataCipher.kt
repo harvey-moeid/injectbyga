@@ -9,7 +9,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-/** Encrypts only BYGA email metadata, never Google credentials or sessions. */
+/** Encrypts local BYGA metadata, never Google credentials or sessions. */
 class MetadataCipher(private val keyProvider: () -> SecretKey = AndroidKeyProvider()::get) {
     fun encrypt(value: String, context: String): String {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")

@@ -273,7 +273,7 @@ fun DashboardScreen(
     OrganizerPanel(border = if (account.id in selected) Cyan else null, modifier = Modifier.testTag("account-${account.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (selected.isNotEmpty()) Checkbox(account.id in selected, { select() }, enabled = !state.busy)
-            Box(Modifier.size(40.dp).background(color.copy(alpha = 0.14f), CircleShape), contentAlignment = Alignment.Center) {
+            if (!compact || selected.isEmpty()) Box(Modifier.size(40.dp).background(color.copy(alpha = 0.14f), CircleShape), contentAlignment = Alignment.Center) {
                 Text(account.alias.take(1).uppercase(), color = color, fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.weight(1f))

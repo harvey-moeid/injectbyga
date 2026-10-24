@@ -41,6 +41,7 @@ class DashboardUiTest {
         compose.onNodeWithText("Hapus metadata").performClick()
         compose.onNodeWithText("Hapus metadata lokal").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Hapus 1 metadata akun?").fetchSemanticsNodes().isEmpty() }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Belum ada akun").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithTag("dashboard-list").performScrollToNode(hasText("Belum ada akun"))
         compose.onNodeWithText("Belum ada akun").assertIsDisplayed()
     }
