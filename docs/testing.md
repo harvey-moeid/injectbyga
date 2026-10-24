@@ -65,6 +65,18 @@ Job `android-persistence` pada run **40041893069** benar-benar menjalankan `conn
 
 Setelah perubahan kebijakan lint, seluruh `help lintDebug testDebugUnitTest assembleDebug assembleDebugAndroidTest` lokal diulang: **BUILD SUCCESSFUL**, 37s (9 task dieksekusi, 75 up-to-date). Check unit test yang tidak berubah menggunakan hasil valid yang up-to-date; tidak dihitung sebagai pengujian login baru.
 
+Run CI kode final [40042430787](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787), commit `107d7da907e8d09b6c705c72ae14967785a3e24c`: job **debug-apk success** (24 Oktober 2026 UTC). Setup SDK, validasi wrapper/Gradle, lint, unit tests, assembleDebug dan assembleDebugAndroidTest lulus. Lint runner melaporkan **0 errors, 14 warnings**: 1 `OldTargetApi` dan 13 rekomendasi `GradleDependency`. Warning terbuka pada log dan artifact; tidak ada error lint yang diabaikan. Perubahan setelah commit tersebut hanya dokumentasi hasil, bukan kode aplikasi.
+
+Artifact APK yang benar-benar tersedia:
+
+- [BYGA-Flow-Manager-Debug-APK](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540280828), ID `12540280828`, ZIP 10.212.145 bytes (APK di dalam ZIP). SHA-256 **arsip ZIP**: `845f9fb44d50d53dfb757833258e77ee72ceebe2a06905647e69a7eeaabd7a4c`; ini berbeda dari hash APK lokal di atas.
+- [BYGA-Phase0-Test-Reports](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540325664), berisi lint/JUnit report dan test APK.
+- [BYGA-Phase0-Android-Test-Reports](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12539707575), hasil 3 tes emulator Android 12/API 31 pada kode final.
+
+**Run 40042430787 selesai dengan kedua job success.** Job `android-persistence` menjalankan dan menyelesaikan 3 tes pada emulator Android 12 (00:02 UTC); `connectedDebugAndroidTest` melaporkan BUILD SUCCESSFUL dalam 3m 44s. Ini mengulang konfirmasi engineering pada kode final, tetap tanpa akun/login Google. Tidak ada pengujian isolasi identitas sungguhan yang dilakukan.
+
+Artifact Actions memiliki masa berlaku (run ini hingga 21 Januari 2027); unduh dari run yang berhasil. Ini APK eksperimen debug, bukan rilis produksi. Lihat juga [build-evidence/ci-checks.txt](build-evidence/ci-checks.txt).
+
 ## Tes Android nyata yang wajib
 
 Belum tersedia bukti untuk login Google, A/B/C, 20 perpindahan, reboot, expiry, sesi independen, offline UI provider, dan aksesibilitas/performa entry-level. Status gate tetap **UNVERIFIED** meskipun seluruh tes engineering lulus. Manual tester harus mencatat versi provider, run IDs, screenshot/video tersamarkan, dan semua intervensi.

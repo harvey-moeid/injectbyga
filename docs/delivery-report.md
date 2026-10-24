@@ -17,6 +17,8 @@
 
 Clean build lokal, lint, 11 unit test dan kompilasi test APK berhasil. Tanda tangan APK debug diverifikasi. Rincian perintah, hash, laporan dan status CI aktual ada di [testing.md](testing.md) dan [build-evidence/local-checks.txt](build-evidence/local-checks.txt).
 
+[CI kode final](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787) menyelesaikan kedua job dengan **success**: build debug dan 3 tes emulator API 31. Lint CI: 0 error, 14 warning versi/target yang tetap terlihat. [Unduh artifact APK eksperimen](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540280828). Bukti detail: [ci-checks.txt](build-evidence/ci-checks.txt). Commit CI `107d7da` berisi kode final; perubahan setelahnya hanya laporan dokumentasi.
+
 APK lokal: `app/build/outputs/apk/debug/app-debug.apk` (eksperimen). Artifact GitHub Actions: `BYGA-Flow-Manager-Debug-APK`. Pengujian emulator memakai metadata sintetik; hasil itu tidak menguji Google identity.
 
 Branch: `codex/byga-phase0-poc`. [Draft PR #1](https://github.com/harvey-moeid/injectbyga/pull/1) dibuat tanpa merge. Semua sumber dan dokumentasi relevan dikomit; APK/cache/keystore tidak dikomit.
@@ -69,6 +71,7 @@ app/src/test/java/com/byga/flowmanager/MetadataCipherTest.kt
 build.gradle.kts
 docs/acceptance-checklist.md
 docs/architecture.md
+docs/build-evidence/ci-checks.txt
 docs/build-evidence/local-checks.txt
 docs/delivery-report.md
 docs/feasibility-gate.json

@@ -12,6 +12,8 @@ PoC menyediakan tiga slot email, rute native/Custom Tabs/browser terpilih/profil
 
 ## Instalasi APK eksperimen
 
+[Unduh APK eksperimen dari CI](https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540280828) — artifact `BYGA-Flow-Manager-Debug-APK`, dibangun pada 24 Oktober 2026 UTC. Unduhan berupa ZIP; ekstrak APK sebelum dipasang. Artifact Actions memiliki masa berlaku dan dapat memerlukan login GitHub.
+
 1. Buka tab **Actions → Android CI** pada repository GitHub dan pilih run yang berhasil.
 2. Unduh artifact **BYGA-Flow-Manager-Debug-APK** (ZIP) dan ekstrak `app-debug.apk`.
 3. Pindahkan ke HP, buka APK, lalu izinkan pemasangan dari sumber tersebut melalui UI Android bila diminta. Ini debug build untuk eksperimen; bukan APK produksi.
