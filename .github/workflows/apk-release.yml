@@ -1,0 +1,55 @@
+name: Manual signed APK (requires GO)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  feasibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require reviewed device evidence and GO
+        run: python3 scripts/check_feasibility_gate.py --require-go
+  signed-candidate:
+    needs: feasibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: '11076708'
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+      - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Decode signing key
+        env:
+          SIGNING_KEY: ${{ secrets.BYGA_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$SIGNING_KEY" || { echo 'Missing BYGA_KEYSTORE_BASE64 secret'; exit 1; }
+          umask 077
+          printf '%s' "$SIGNING_KEY" | base64 --decode > "$RUNNER_TEMP/byga-release.jks"
+      - name: Check and build signed candidate
+        env:
+          BYGA_KEYSTORE_PATH: ${{ runner.temp }}/byga-release.jks
+          BYGA_KEYSTORE_PASSWORD: ${{ secrets.BYGA_KEYSTORE_PASSWORD }}
+          BYGA_KEY_ALIAS: ${{ secrets.BYGA_KEY_ALIAS }}
+          BYGA_KEY_PASSWORD: ${{ secrets.BYGA_KEY_PASSWORD }}
+        run: |
+          test -n "$BYGA_KEYSTORE_PASSWORD" && test -n "$BYGA_KEY_ALIAS" && test -n "$BYGA_KEY_PASSWORD" || { echo 'Missing signing secrets'; exit 1; }
+          ./gradlew --no-daemon --stacktrace lintRelease testReleaseUnitTest assembleRelease
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/release/app-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BYGA-Flow-Manager-Signed-Candidate
+          path: app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+      - name: Remove signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/byga-release.jks"

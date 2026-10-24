@@ -1,0 +1,10 @@
+{
+  "status": "UNVERIFIED",
+  "evidence": [],
+  "product_scope": "MANUAL_FLOW_SWITCHING",
+  "scope_approval": {
+    "status": "USER_APPROVED",
+    "user_quote": "satu browser saja",
+    "document": "docs/scope-manual-switching.md"
+  }
+}

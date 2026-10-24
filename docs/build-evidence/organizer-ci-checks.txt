@@ -1,0 +1,19 @@
+BYGA v0.2.0-manual — GitHub Actions evidence
+Code commit: 560fbafb75785c1d52ea6102d9327c48888b8e6e
+Run: https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432
+Both jobs completed / success (2026-10-24 UTC).
+Debug job120732794154: SDK/Gradle validation, lint, unit tests, assembleDebug/assembleDebugAndroidTest success.
+JVM unit tests: 22 defined/executed locally with0 failures/errors/skipped; CI test task success.
+Lint CI: 0 errors,14 visible warnings (OldTargetApi x1,GradleDependency x13).
+Android job120732793704: Starting11 tests on emulator-5554 -12 at01:05:12 UTC; Finished11 tests at01:05:24; BUILD SUCCESSFUL in5m7s.
+All Android fixtures synthetic; no Google login/identity or actual session-isolation tests.
+APK artifact: BYGA-Flow-Manager-Debug-APK, ID12542067641
+Download: https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542067641
+ZIP bytes: 16983454
+ZIP SHA256: 5299a69c25a22568f0a2d311cfa4ed4bc965c26857c19aa3a307a7662fd80301
+ZIP digest is not the raw APK digest. Debug signature differs by runner/toolchain key.
+JUnit/lint/test APK: https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542012916
+Android reports: https://github.com/harvey-moeid/injectbyga/actions/runs/40047505432/artifacts/12542441141
+Artifact expiry: 2027-01-22 UTC.
+Scope: one browser; user chooses account manually in Flow.
+Isolation gate: UNVERIFIED; manual scope user-approved, production publication remains blocked.

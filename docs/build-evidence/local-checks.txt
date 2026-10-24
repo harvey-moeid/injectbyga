@@ -1,0 +1,22 @@
+BYGA Phase 0 — engineering evidence only; Google identity/isolation UNVERIFIED.
+Recorded UTC: 2026-10-23T23:51:29.378022+00:00
+JDK: Eclipse Temurin 17.0.17+10 (full JDK; Gradle source/target 17)
+SDK: API 35; build-tools 35.0.0; minSdk 31
+Gradle wrapper: 8.11.1; distribution checksum verified by wrapper
+Command: ./gradlew --no-daemon --stacktrace clean help lintDebug testDebugUnitTest assembleDebug assembleDebugAndroidTest
+Result: BUILD SUCCESSFUL in 1m 13s; 85 actionable tasks executed
+Lint: No issues found.
+com.byga.flowmanager.IdentityRulesTest: tests=7 failures=0 errors=0 skipped=0
+com.byga.flowmanager.MetadataCipherTest: tests=4 failures=0 errors=0 skipped=0
+APK: app/build/outputs/apk/debug/app-debug.apk
+APK bytes: 29147557
+APK SHA-256: 2aadf21adbd0cd90b592ab82b8955ec76fa0729eebbb79703ae5b3f1b694ce63
+aapt badging: com.byga.flowmanager; BYGA Flow Manager; 0.1.0-poc; minSdk31; targetSdk35
+apksigner verify --verbose: exit 0; v2 signature valid; one debug signer
+actionlint 1.7.7: exit 0 for both workflows
+python3 scripts/check_feasibility_gate.py: exit 0; UNVERIFIED manifest valid
+python3 scripts/check_feasibility_gate.py --require-go: exit 1 as expected; release blocked
+PRD.md compared byte-for-byte to attached source: identical
+No local connectedDebugAndroidTest run: no Android device/emulator; /dev/kvm absent.
+No real Google accounts, login test, Flow identity observations, or session isolation tests.
+CI emulator/device-metadata results are reported separately in docs/testing.md.

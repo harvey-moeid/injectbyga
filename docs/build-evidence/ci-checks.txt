@@ -1,0 +1,22 @@
+BYGA Phase 0 — GitHub Actions evidence, not Google session-isolation evidence.
+Validated code commit: 107d7da907e8d09b6c705c72ae14967785a3e24c
+Run: https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787
+Debug job: 120716357313 — completed / success, 2026-10-24 UTC
+Setup SDK, Gradle configuration, lint, JVM unit tests, assembleDebug and assembleDebugAndroidTest: success
+CI lint: 0 errors, 14 warnings (OldTargetApi x1; GradleDependency x13)
+Pinned stable dependencies and target35 have update recommendations; retain warnings and review before production.
+No lint suppression/baseline; abortOnError=true, warningsAsErrors=false.
+Artifact: BYGA-Flow-Manager-Debug-APK
+Artifact ID: 12540280828
+Download: https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540280828
+ZIP bytes: 10212145
+ZIP digest: sha256:845f9fb44d50d53dfb757833258e77ee72ceebe2a06905647e69a7eeaabd7a4c
+This digest is for the CI artifact ZIP, not the raw APK or local debug signature.
+Reports: https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12540325664
+Prior Android instrumentation run 40041893069, job120714656434: success; 3 tests completed on Android12/API31 emulator.
+Final Android instrumentation run 40042430787, job120716357031: completed/success; 3 tests started and finished on Android12/API31 emulator at 2026-10-24 00:02 UTC; BUILD SUCCESSFUL in 3m44s.
+Final run: both jobs completed/success.
+Final Android reports: https://github.com/harvey-moeid/injectbyga/actions/runs/40042430787/artifacts/12539707575
+Tests: Room/Keystore reopen; latest-trial/stale-confirmation/mismatch; Compose configuration and warning/cancel UI.
+All test emails synthetic; no Google login or identity/session tests.
+Gate: UNVERIFIED. Production signing/publishing blocked until reviewed GO evidence.
